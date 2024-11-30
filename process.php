@@ -214,4 +214,96 @@
             header("location:index.php?p=pengunjung");
         }
     }
+
+    if($_GET['p'] == "tambahPekerja"){
+        $namaPekerja = $_POST['namaPekerja'];
+        $jabatanPekerja = $_POST['jabatanPekerja'];
+        $tanggal = $_POST['tahun'] . '-' . $_POST['bulan'] . '-' . $_POST['tanggal'];
+        
+        $query = "INSERT INTO pekerja VALUES('','$namaPekerja','$jabatanPekerja','$tanggal')";
+        $sql = mysqli_query($conn, $query);
+
+        if($sql){
+            header("location:index.php?p=pekerja");
+        }else{
+            header("location:index.php?p=pekerja");
+        }
+    }
+
+    if($_GET['p'] == "editPekerja"){
+        $idPekerja = $_GET['idPekerja'];
+        $namaPekerja = $_POST['namaPekerja'];
+        $jabatanPekerja = $_POST['jabatanPekerja'];
+        $tanggal = $_POST['tahun'] . '-' . $_POST['bulan'] . '-' . $_POST['tanggal'];
+       
+
+        $query = "UPDATE pekerja SET namaPekerja = '$namaPekerja',jabatanPekerja = '$jabatanPekerja', tanggalLahir = '$tanggal' WHERE idPekerja = '$idPekerja'";
+        $sql = mysqli_query($conn, $query);
+
+        if($sql){
+            header("location:index.php?p=pekerja");
+        }else{
+            header("location:index.php?p=pekerja");
+        }
+    }
+
+    if($_GET['p'] == "hapusPekerja"){
+        $idPekerja = $_GET['idPekerja'];
+
+        $query = "DELETE from pekerja WHERE idPekerja = '$idPekerja'";
+        $sql = mysqli_query($conn, $query);
+
+        if($sql){
+            header("location:index.php?p=pekerja");
+        }else{
+            header("location:index.php?p=pekerja");
+        }
+
+    }
+
+    if($_GET['p'] == "tambahSponsor"){
+        $namaSponsor = $_POST['namaSponsor'];
+        $namaPemilik = $_POST['namaPemilik'];
+        $biayaPerKonser = $_POST['biayaPerKonser'];
+        
+        $query = "INSERT INTO sponsor VALUES('','$namaSponsor','$namaPemilik','$biayaPerKonser')";
+        $sql = mysqli_query($conn, $query);
+
+        if($sql){
+            header("location:index.php?p=sponsor");
+        }else{
+            header("location:index.php?p=sponsor");
+        }
+    }
+
+    if($_GET['p'] == "editSponsor"){
+        $idSponsor = $_GET['idSponsor'];
+        $namaSponsor = $_POST['namaSponsor'];
+        $namaPemilik = $_POST['namaPemilik'];
+        $biayaPerKonser = $_POST['biayaPerKonser'];
+       
+
+        $query = "UPDATE sponsor SET namaSponsor = '$namaSponsor',namaPemilik = '$namaPemilik', biayaPerKonser = '$biayaPerKonser' WHERE idSponsor = '$idSponsor'";
+        $sql = mysqli_query($conn, $query);
+
+        if($sql){
+            header("location:index.php?p=sponsor");
+        }else{
+            header("location:index.php?p=sponsor");
+        }
+    }
+
+    if($_GET['p'] == "hapusSponsor"){
+        $idSponsor = $_GET['idSponsor'];
+
+        $query = "DELETE from sponsor WHERE idSponsor = '$idSponsor'";
+        $sql = mysqli_query($conn, $query);
+
+        if($sql){
+            header("location:index.php?p=sponsor");
+        }else{
+            header("location:index.php?p=sponsor");
+        }
+
+    }
 ?>

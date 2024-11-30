@@ -55,7 +55,7 @@
               </a>
             </div>
             <div class="col-lg-2">
-              <a href="" class="text-decoration-none">
+              <a href="index.php?p=pekerja" class="text-decoration-none">
               <div class="card text-light" style="height: 14rem; width: 10rem; background-color: rgba(158, 223, 156, 0.4);">
                 <h1 class="pt-4"><i class="bi bi-person-badge-fill"></i></h1>
                 <div class="card-body">
@@ -66,7 +66,7 @@
               </a>
             </div>
             <div class="col-lg-2">
-              <a href="" class="text-decoration-none">
+              <a href="index.php?p=sponsor" class="text-decoration-none">
               <div class="card text-light" style="height: 14rem; width: 10rem; background-color: rgba(158, 223, 156, 0.4);">
                 <h1 class="pt-4"><i class="bi bi-globe-asia-australia"></i></h1>
                 <div class="card-body">
@@ -654,10 +654,234 @@
 
     if($parameter == "pekerja"){
 
+?>
+
+    <div class="container text-center" style="color: #9EDF9C">
+        <h1 class="my-3">Tabel Pekerja</h1>
+        <p>Daftar Pekerja Yang Terdaftar Kedalam Sistem</p>
+        <a href="index.php?p=tambahPekerja" class="btn fw-bold" style="background-color: #9EDF9C; color: black">Daftarkan Pekerja</a>
+        <table class="table mt-4">
+            <tr>
+                <th class="text-light" style="background-color: #62825D">No</th>
+                <th class="text-light" style="background-color: #62825D">Nama Pekerja</th>
+                <th class="text-light" style="background-color: #62825D">Jabatan Pekerja</th>
+                <th class="text-light" style="background-color: #62825D">Tanggal Lahir</th>
+                <th class="text-light" style="background-color: #62825D">Aksi</th>
+            </tr>
+            <?php
+            $query = "SELECT * FROM pekerja";
+            $sql = mysqli_query($conn, $query);
+            $no = 1;
+            while ($data = mysqli_fetch_array($sql)) {
+            ?>
+            <tr class="fw-bold">
+                <td><?= $no ?></td>
+                <td><?= $data['namaPekerja'] ?></td>
+                <td><?= $data['jabatanPekerja'] ?></td>
+                <td><?= $data['tanggalLahir'] ?></td>
+                <td>
+                    <a class="btn fw-bold m-1" href="index.php?p=editPekerja&idPekerja=<?= $data['idPekerja'] ?>" style="background-color: #9EDF9C; color: black">Edit</a>
+                    <a class="btn fw-bold m-1" href="process.php?p=hapusPekerja&idPekerja=<?= $data['idPekerja'] ?>" style="background-color: #AF1740; color: white" onclick="confirm('Apakah Yakin Ingin Menghapus Data ?')">Delete</a>
+                </td>
+            </tr>
+            <?php $no++; } ?>
+        </table>
+    </div>
+
+<?php
     }
 
-    if($parameter == "sponsor"){
+    if($parameter == "tambahPekerja"){
+?>
 
+<div class="container text-center">
+        <h1 class="my-4" style="color: #9EDF9C">Form Pendaftaran Pekerja</h1>
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <form action="process.php?p=tambahPekerja" method="post">
+                    <input required class="form-control fw-bold my-3" type="text" name="namaPekerja" placeholder="Nama Pekerja">
+                    <input required class="form-control fw-bold my-3" type="text" name="jabatanPekerja" placeholder="Jabatan Pekerja">
+                    <div class="row my-3">
+                        <div class="col-lg-4">
+                            <select required name="tanggal" class="form-select fw-bold" id="">
+                                <option value="" selected>Tanggal Lahir</option>
+                                <?php for($i = 1; $i <= 30; $i++){?>
+                                  <option value="<?= $i?>"><?= $i ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        <div class="col-lg-4">
+                            <select required name="bulan" class="form-select fw-bold" id="">
+                                <option value="" selected>Bulan Lahir</option>
+                                <?php $listBulan = [1=>'Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember']?>
+                                <?php foreach($listBulan as $bulan => $value){ ?>
+                                    <option value="<?= $bulan ?>"><?= $value ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        <div class="col-lg-4">
+                            <select required name="tahun" class="form-select fw-bold" id="">
+                                <option value="" selected>Tahun Lahir</option>
+                                <?php for($i = 2024; $i >= 1800; $i--){?>
+                                  <option value="<?= $i?>"><?= $i ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                    </div>
+                   
+                    <button type="submit" name="submit" class="btn my-3 fw-bold" style="background-color: #9EDF9C" >Daftarkan Pekerja</button>
+                </form>
+            </div>
+        </div>
+        
+    </div>
+
+    <?php
+    }
+
+    if($parameter == "editPekerja"){     
+
+        $id = $_GET['idPekerja'];
+        $query = "SELECT * FROM pekerja WHERE idPekerja = $id";
+        $sql = mysqli_query($conn,$query);
+        $data = mysqli_fetch_array($sql);
+
+        $dataTanggal = explode('-', $data['tanggalLahir']);
+?>
+<div class="container text-center">
+<h1 class="my-4" style="color: #9EDF9C">Form Pengeditan Pekerja</h1>
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <form action="process.php?p=editPekerja&idPekerja=<?=$id?>" method="post">
+            <input required class="form-control fw-bold my-3" type="text" name="namaPekerja" value="<?= $data['namaPekerja']?>" placeholder="Nama Pekerja">
+            <input required class="form-control fw-bold my-3" type="text" name="jabatanPekerja" placeholder="Jabatan Pekerja">
+            <div class="row my-3">
+                <div class="col-lg-4">
+                    <select required name="tanggal" class="form-select fw-bold" id="">
+                        <option value="" selected>Tanggal Lahir</option>
+                        <?php for($i = 1; $i <= 30; $i++){?>
+                            <option value="<?= $i?>"><?= $i ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+                <div class="col-lg-4">
+                    <select required name="bulan" class="form-select fw-bold" id="">
+                        <option value="" selected>Bulan Lahir</option>
+                        <?php $listBulan = [1=>'Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember']?>
+                        <?php foreach($listBulan as $bulan => $value){ ?>
+                            <option value="<?= $bulan ?>"><?= $value ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+                <div class="col-lg-4">
+                    <select required name="tahun" class="form-select fw-bold" id="">
+                        <option value="" selected>Tahun Lahir</option>
+                        <?php for($i = 2024; $i >= 1800; $i--){?>
+                            <option value="<?= $i?>"><?= $i ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+            </div>
+            
+            <button type="submit" name="submit" class="btn my-3 fw-bold" style="background-color: #9EDF9C" >Perbaharui Data Pekerja</button>
+        </form>
+    </div>
+</div>
+
+</div>
+
+
+<?php
+    }
+    
+
+    if($parameter == "sponsor"){
+        ?>
+
+    <div class="container text-center" style="color: #9EDF9C">
+        <h1 class="my-3">Tabel Sponsor</h1>
+        <p>Daftar Sponsor Yang Terdaftar Kedalam Sistem</p>
+        <a href="index.php?p=tambahSponsor" class="btn fw-bold" style="background-color: #9EDF9C; color: black">Daftarkan Sponsor</a>
+        <table class="table mt-4">
+            <tr>
+                <th class="text-light" style="background-color: #62825D">No</th>
+                <th class="text-light" style="background-color: #62825D">Nama Sponsor</th>
+                <th class="text-light" style="background-color: #62825D">Nama Pemilik</th>
+                <th class="text-light" style="background-color: #62825D">Biaya PerKonser</th>
+                <th class="text-light" style="background-color: #62825D">Aksi</th>
+            </tr>
+            <?php
+            $query = "SELECT * FROM sponsor";
+            $sql = mysqli_query($conn, $query);
+            $no = 1;
+            while ($data = mysqli_fetch_array($sql)) {
+            ?>
+            <tr class="fw-bold">
+                <td><?= $no ?></td>
+                <td><?= $data['namaSponsor'] ?></td>
+                <td><?= $data['namaPemilik'] ?></td>
+                <td><?= $data['biayaPerKonser'] ?></td>
+                <td>
+                    <a class="btn fw-bold m-1" href="index.php?p=editSponsor&idSponsor=<?= $data['idSponsor'] ?>" style="background-color: #9EDF9C; color: black">Edit</a>
+                    <a class="btn fw-bold m-1" href="process.php?p=hapusSponsor&idSponsor=<?= $data['idSponsor'] ?>" style="background-color: #AF1740; color: white" onclick="confirm('Apakah Yakin Ingin Menghapus Data ?')">Delete</a>
+                </td>
+            </tr>
+            <?php $no++; } ?>
+        </table>
+    </div>
+
+<?php
+    }
+
+    if($parameter == "tambahSponsor"){
+
+    ?>
+
+<div class="container text-center">
+        <h1 class="my-4" style="color: #9EDF9C">Form Sponsor</h1>
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <form action="process.php?p=tambahSponsor" method="post">
+                    <input required class="form-control fw-bold my-3" type="text" name="namaSponsor" placeholder="Nama Sponsor">
+                    <input required class="form-control fw-bold my-3" type="text" name="namaPemilik" placeholder="Nama Pemilik">
+                    <input required class="form-control fw-bold my-3" type="number" name="biayaPerKonser" placeholder="Biaya PerKonser">
+                   
+                    <button type="submit" name="submit" class="btn my-3 fw-bold" style="background-color: #9EDF9C" >Daftarkan Sponsor</button>
+                </form>
+            </div>
+        </div>
+        
+    </div>
+
+    <?php
+    }
+
+    if($parameter == "editSponsor"){     
+
+        $id = $_GET['idSponsor'];
+        $query = "SELECT * FROM sponsor WHERE idSponsor = $id";
+        $sql = mysqli_query($conn,$query);
+        $data = mysqli_fetch_array($sql);
+
+?>
+<div class="container text-center">
+<h1 class="my-4" style="color: #9EDF9C">Form Pengeditan Sponsor</h1>
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <form action="process.php?p=editSponsor&idSponsor=<?=$id?>" method="post">
+            <input required class="form-control fw-bold my-3" type="text" name="namaSponsor" value="<?= $data['namaSponsor']?>" placeholder="Nama Sponsor">
+            <input required class="form-control fw-bold my-3" type="text" name="namaPemilik" placeholder="Nama Pemilik">
+            <input required class="form-control fw-bold my-3" type="number" name="biayaPerKonser" placeholder="Biaya PerKonser">
+            
+            <button type="submit" name="submit" class="btn my-3 fw-bold" style="background-color: #9EDF9C" >Perbaharui Data Sponsor</button>
+        </form>
+    </div>
+</div>
+
+</div>
+
+
+<?php
     }
 
 ?>
