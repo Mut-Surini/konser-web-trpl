@@ -22,7 +22,7 @@
               </a>
             </div>
             <div class="col-lg-2">
-              <a href="" class="text-decoration-none">
+              <a href="index.php?p=tiket" class="text-decoration-none">
               <div class="card text-light" style="height: 14rem; width: 10rem; background-color: rgba(158, 223, 156, 0.4);">
                 <h1 class="pt-4"><i class="bi bi-ticket-perforated-fill"></i></h1>
                 <div class="card-body">
@@ -33,7 +33,7 @@
               </a>
             </div>
             <div class="col-lg-2">
-              <a href="" class="text-decoration-none">
+              <a href="index.php?p=penyanyi" class="text-decoration-none">
               <div class="card text-light" style="height: 14rem; width: 10rem; background-color: rgba(158, 223, 156, 0.4);">
                 <h1 class="pt-4"><i class="bi bi-music-note-beamed"></i></h1>
                 <div class="card-body">
@@ -350,11 +350,215 @@
     }
 
     if($parameter == "tiket"){
+?>
+
+<div class="container text-center" style="color: #9EDF9C">
+        <h1 class="my-3">Tabel Tiket</h1>
+        <p>Daftar Tiket Yang Terdaftar Kedalam Sistem</p>
+        <a href="index.php?p=tambahTiket" class="btn fw-bold" style="background-color: #9EDF9C; color: black">Daftarkan Tiket Baru</a>
+        <table class="table mt-4">
+            <tr>
+                <th class="text-light" style="background-color: #62825D">No</th>
+                <th class="text-light" style="background-color: #62825D">Nomor Tiket</th>
+                <th class="text-light" style="background-color: #62825D">Konser</th>
+                <th class="text-light" style="background-color: #62825D">Status</th>
+            </tr>
+            <?php 
+            $query = "SELECT tiket.*, konser.namaKonser FROM tiket JOIN konser ON tiket.idKonser = konser.idKonser";
+            $sql = mysqli_query($conn, $query);
+            $no = 1;
+            while($data = mysqli_fetch_array($sql)){
+            ?>
+            <tr class="fw-bold">
+                <td><?= $no ?></td>
+                <td><?= $data['nomorTiket']?></td>
+                <td><?= $data['namaKonser']?></td>
+                <td><?= $data['statusTiket']?></td>
+            </tr>
+            <?php $no++;
+            } ?>
+        </table>
+    </div>
+
+<?php
+    }
+    function generateString($length = 8) {
+        $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString; 
+   
+    }
+
+    if ($parameter == "tambahTiket") {
+?>
+    <div class="container text-center">
+        <h1 class="my-4">Tambah Tiket</h1>
+        <form action="process.php?p=tambahTiket" method="post">
+            <div class="mb-3">
+                <label for="idKonser" class="form-label">Pilih Konser</label>
+                <select name="idKonser" id="idKonser" class="form-select" required>
+                    <option value="" selected>Pilih Konser</option>
+                    <?php
+                   
+                    $queryKonser = "SELECT idKonser, namaKonser FROM konser";
+                    $resultKonser = mysqli_query($conn, $queryKonser);
+                    while ($rowKonser = mysqli_fetch_assoc($resultKonser)) {
+                        echo "<option value='{$rowKonser['idKonser']}'>{$rowKonser['namaKonser']}</option>";
+                    }
+                    ?>
+                </select>
+            </div>
+            <button type="submit" name="tambah_tiket" class="btn btn-primary">Tambah Tiket</button>
+        </form>
+    </div>
+
+<?php
 
     }
 
     if($parameter == "penyanyi"){
+?>
 
+    <div class="container text-center" style="color: #9EDF9C">
+        <h1 class="my-3">Tabel Penyanyi</h1>
+        <p>Daftar Penyanyi Yang Terdaftar Kedalam Sistem</p>
+        <a href="index.php?p=tambahPenyanyi" class="btn fw-bold" style="background-color: #9EDF9C; color: black">Daftarkan Penyanyi Baru</a>
+        <table class="table mt-4">
+            <tr>
+                <th class="text-light" style="background-color: #62825D">No</th>
+                <th class="text-light" style="background-color: #62825D">Nama Penyanyi</th>
+                <th class="text-light" style="background-color: #62825D">Nama Panggung</th>
+                <th class="text-light" style="background-color: #62825D">Tanggal Lahir</th>
+                <th class="text-light" style="background-color: #62825D">Aksi</th>
+            </tr>
+            <?php
+            $query = "SELECT * FROM penyanyi";
+            $sql = mysqli_query($conn, $query);
+            $no = 1;
+            while ($data = mysqli_fetch_array($sql)) {
+            ?>
+            <tr class="fw-bold">
+                <td><?= $no ?></td>
+                <td><?= $data['namaPenyanyi'] ?></td>
+                <td><?= $data['namaPanggung'] ?></td>
+                <td><?= $data['tanggalLahir'] ?></td>
+                <td>
+                    <a class="btn fw-bold m-1" href="index.php?p=editPenyanyi&idPenyanyi=<?= $data['idPenyanyi'] ?>" style="background-color: #9EDF9C; color: black">Edit</a>
+                    <a class="btn fw-bold m-1" href="process.php?p=hapusPenyanyi&idPenyanyi=<?= $data['idPenyanyi'] ?>" style="background-color: #AF1740; color: white" onclick="confirm('Apakah Yakin Ingin Menghapus Data ?')">Delete</a>
+                </td>
+            </tr>
+            <?php $no++; } ?>
+        </table>
+    </div>
+
+<?php
+    }
+
+    if($parameter == "tambahPenyanyi"){
+?>
+
+<div class="container text-center">
+        <h1 class="my-4" style="color: #9EDF9C">Form Pendaftaran Penyanyi Baru</h1>
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <form action="process.php?p=tambahPenyanyi" method="post">
+                    <input required class="form-control fw-bold my-3" type="text" name="namaPenyanyi" placeholder="Nama Penyanyi">
+                    <input required class="form-control fw-bold my-3" type="text" name="namaPanggung" placeholder="Nama Panggung">
+                    <div class="row my-3">
+                        <div class="col-lg-4">
+                            <select required name="tanggal" class="form-select fw-bold" id="">
+                                <option value="" selected>Pilih Tanggal</option>
+                                <?php for($i = 1; $i <= 30; $i++){?>
+                                  <option value="<?= $i?>"><?= $i ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        <div class="col-lg-4">
+                            <select required name="bulan" class="form-select fw-bold" id="">
+                                <option value="" selected>Pilih Bulan</option>
+                                <?php $listBulan = [1=>'Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember']?>
+                                <?php foreach($listBulan as $bulan => $value){ ?>
+                                    <option value="<?= $bulan ?>"><?= $value ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        <div class="col-lg-4">
+                            <select required name="tahun" class="form-select fw-bold" id="">
+                                <option value="" selected>Pilih Tahun</option>
+                                <?php for($i = 2024; $i >= 1800; $i--){?>
+                                  <option value="<?= $i?>"><?= $i ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                    </div>
+                   
+                    <button type="submit" name="submit" class="btn my-3 fw-bold" style="background-color: #9EDF9C" >Daftarkan Penyanyi</button>
+                </form>
+            </div>
+        </div>
+        
+    </div>
+
+    <?php
+    }
+
+    if($parameter == "editPenyanyi"){     
+
+        $id = $_GET['idPenyanyi'];
+        $query = "SELECT * FROM penyanyi WHERE idPenyanyi = $id";
+        $sql = mysqli_query($conn,$query);
+        $data = mysqli_fetch_array($sql);
+
+        $dataTanggal = explode('-', $data['tanggalLahir']);
+?>
+<div class="container text-center">
+<h1 class="my-4" style="color: #9EDF9C">Form Pengeditan Penyanyi</h1>
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <form action="process.php?p=editPenyanyi&idPenyanyi=<?=$id?>" method="post">
+            <input required class="form-control fw-bold my-3" type="text" name="namaPenyanyi" value="<?= $data['namaPenyanyi']?>" placeholder="Nama Penyanyi">
+            <input required class="form-control fw-bold my-3" type="text" name="namaPanggung" placeholder="Nama Panggung">
+            <div class="row my-3">
+                <div class="col-lg-4">
+                    <select required name="tanggal" class="form-select fw-bold" id="">
+                        <option value="" selected>Pilih Tanggal Lahir</option>
+                        <?php for($i = 1; $i <= 30; $i++){?>
+                            <option value="<?= $i?>"><?= $i ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+                <div class="col-lg-4">
+                    <select required name="bulan" class="form-select fw-bold" id="">
+                        <option value="" selected>Pilih Bulan Lahir</option>
+                        <?php $listBulan = [1=>'Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember']?>
+                        <?php foreach($listBulan as $bulan => $value){ ?>
+                            <option value="<?= $bulan ?>"><?= $value ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+                <div class="col-lg-4">
+                    <select required name="tahun" class="form-select fw-bold" id="">
+                        <option value="" selected>Pilih Tahun Lahir</option>
+                        <?php for($i = 2024; $i >= 1800; $i--){?>
+                            <option value="<?= $i?>"><?= $i ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+            </div>
+            
+            <button type="submit" name="submit" class="btn my-3 fw-bold" style="background-color: #9EDF9C" >Perbaharui Data Penyanyi</button>
+        </form>
+    </div>
+</div>
+
+</div>
+
+
+<?php
     }
 
     if($parameter == "pengunjung"){

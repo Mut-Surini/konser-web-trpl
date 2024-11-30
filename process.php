@@ -51,6 +51,97 @@
 
     }
 
+   
+    function generateString($length = 8) {
+        $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString; 
+   
+    }
+    
+    if ($_GET['p'] == "tambahTiket") {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $idKonser = mysqli_real_escape_string($conn, $_POST['idKonser']);
+    
+            do {
+                $nomorTiket = generateString();
+                $stmt = mysqli_prepare($conn, "SELECT * FROM tiket WHERE nomorTiket = ?");
+                mysqli_stmt_bind_param($stmt, "s", $nomorTiket);
+                mysqli_stmt_execute($stmt);
+                $result = mysqli_stmt_get_result($stmt);
+            } while (mysqli_num_rows($result) > 0);
+    
+            $stmt = mysqli_prepare($conn, "INSERT INTO tiket (nomorTiket, idKonser, statusTiket) VALUES (?, ?, 'Unused')");
+            mysqli_stmt_bind_param($stmt, "si", $nomorTiket, $idKonser);
+            mysqli_stmt_execute($stmt);
+    
+            if (mysqli_stmt_affected_rows($stmt) > 0) {
+                header("Location: index.php?p=tiket");
+            } else {
+                echo "Terjadi kesalahan saat menambahkan tiket.";
+            }
+        } else {
+            ?>
+            <form method="POST" action="">
+                <label for="idKonser">Pilih Konser:</label>
+                <select name="idKonser" id="idKonser">
+                    </select>
+                <button type="submit">Tambah Tiket</button>
+            </form>
+            <?php
+        }
+    }
+
+    if($_GET['p'] == "tambahPenyanyi"){
+        $namaPenyanyi = $_POST['namaPenyanyi'];
+        $namaPanggung = $_POST['namaPanggung'];
+        $tanggal = $_POST['tahun'] . '-' . $_POST['bulan'] . '-' . $_POST['tanggal'];
+        
+        $query = "INSERT INTO penyanyi VALUES('','$namaPenyanyi','$namaPanggung','$tanggal')";
+        $sql = mysqli_query($conn, $query);
+
+        if($sql){
+            header("location:index.php?p=penyanyi");
+        }else{
+            header("location:index.php?p=penyanyi");
+        }
+    }
+
+    if($_GET['p'] == "editPenyanyi"){
+        $idPenyanyi = $_GET['idPenyanyi'];
+        $namaPenyanyi = $_POST['namaPenyanyi'];
+        $namaPanggung = $_POST['namaPanggung'];
+        $tanggal = $_POST['tahun'] . '-' . $_POST['bulan'] . '-' . $_POST['tanggal'];
+       
+
+        $query = "UPDATE penyanyi SET namaPenyanyi = '$namaPenyanyi',namaPanggung = '$namaPanggung', tanggalLahir = '$tanggal' WHERE idPenyanyi = '$idPenyanyi'";
+        $sql = mysqli_query($conn, $query);
+
+        if($sql){
+            header("location:index.php?p=penyanyi");
+        }else{
+            header("location:index.php?p=penyanyi");
+        }
+    }
+
+    if($_GET['p'] == "hapusPenyanyi"){
+        $idPenyanyi = $_GET['idPenyanyi'];
+
+        $query = "DELETE from penyanyi WHERE idPenyanyi = '$idPenyanyi'";
+        $sql = mysqli_query($conn, $query);
+
+        if($sql){
+            header("location:index.php?p=penyanyi");
+        }else{
+            header("location:index.php?p=penyanyi");
+        }
+
+    }
+
     if($_GET['p'] == "tambahPengunjung"){
         $namaPengunjung = $_POST['namaPengunjung'];
         $nomorTiket = $_POST['nomorTiket'];
