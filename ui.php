@@ -111,10 +111,14 @@
                 <td><?= $data['genreKonser']?></td>
                 <td><?= $data['daftarPenyanyi']?></td>
                 <td><?= $data['daftarPekerja']?></td>
-                <td>100</td>
+                <?php 
+                    $sql2 = mysqli_query($conn, "SELECT count(nomorTiket) as jumlah from tiket join konser on tiket.idKonser = konser.idKonser where namaKonser = '$data[namaKonser]' and statusTiket = 'unused'");
+                    $data2 = mysqli_fetch_array($sql2);
+                ?>
+                <td><?= $data2['jumlah']?></td>
                 <td>
                     <a class="btn fw-bold m-1" href="index.php?p=editKonser&idKonser=<?= $data['idKonser']?>" style="background-color: #9EDF9C; color: black">Edit</a>
-                    <a class="btn fw-bold m-1" href="process.php?p=hapusKonser&idKonser=<?= $data['idKonser']?>"  style="background-color: #AF1740; color: white" onclick="confirm('Apakah Yakin Ingin Menghapus Data ?')">Delete</a>
+                    <a class="btn fw-bold m-1" href="process.php?p=hapusKonser&idKonser=<?= $data['idKonser']?>"  style="background-color: #AF1740; color: white" onclick="return confirm('Apakah Yakin Ingin Menghapus Data ?')">Delete</a>
                 </td>
             </tr>
             <?php $no++;
@@ -448,7 +452,7 @@
                 <td><?= $data['tanggalLahir'] ?></td>
                 <td>
                     <a class="btn fw-bold m-1" href="index.php?p=editPenyanyi&idPenyanyi=<?= $data['idPenyanyi'] ?>" style="background-color: #9EDF9C; color: black">Edit</a>
-                    <a class="btn fw-bold m-1" href="process.php?p=hapusPenyanyi&idPenyanyi=<?= $data['idPenyanyi'] ?>" style="background-color: #AF1740; color: white" onclick="confirm('Apakah Yakin Ingin Menghapus Data ?')">Delete</a>
+                    <a class="btn fw-bold m-1" href="process.php?p=hapusPenyanyi&idPenyanyi=<?= $data['idPenyanyi'] ?>" style="background-color: #AF1740; color: white" onclick="return confirm('Apakah Yakin Ingin Menghapus Data ?')">Delete</a>
                 </td>
             </tr>
             <?php $no++; } ?>
@@ -471,7 +475,7 @@
                     <div class="row my-3">
                         <div class="col-lg-4">
                             <select required name="tanggal" class="form-select fw-bold" id="">
-                                <option value="" selected>Pilih Tanggal</option>
+                                <option value="" selected>Pilih Tanggal Lahir</option>
                                 <?php for($i = 1; $i <= 30; $i++){?>
                                   <option value="<?= $i?>"><?= $i ?></option>
                                 <?php } ?>
@@ -479,7 +483,7 @@
                         </div>
                         <div class="col-lg-4">
                             <select required name="bulan" class="form-select fw-bold" id="">
-                                <option value="" selected>Pilih Bulan</option>
+                                <option value="" selected>Pilih Bulan Lahir</option>
                                 <?php $listBulan = [1=>'Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember']?>
                                 <?php foreach($listBulan as $bulan => $value){ ?>
                                     <option value="<?= $bulan ?>"><?= $value ?></option>
@@ -488,7 +492,7 @@
                         </div>
                         <div class="col-lg-4">
                             <select required name="tahun" class="form-select fw-bold" id="">
-                                <option value="" selected>Pilih Tahun</option>
+                                <option value="" selected>Pilih Tahun Lahir</option>
                                 <?php for($i = 2024; $i >= 1800; $i--){?>
                                   <option value="<?= $i?>"><?= $i ?></option>
                                 <?php } ?>
@@ -521,13 +525,13 @@
     <div class="col-lg-6">
         <form action="process.php?p=editPenyanyi&idPenyanyi=<?=$id?>" method="post">
             <input required class="form-control fw-bold my-3" type="text" name="namaPenyanyi" value="<?= $data['namaPenyanyi']?>" placeholder="Nama Penyanyi">
-            <input required class="form-control fw-bold my-3" type="text" name="namaPanggung" placeholder="Nama Panggung">
+            <input required class="form-control fw-bold my-3" type="text" name="namaPanggung" value="<?= $data['namaPanggung']?>" placeholder="Nama Panggung">
             <div class="row my-3">
                 <div class="col-lg-4">
                     <select required name="tanggal" class="form-select fw-bold" id="">
                         <option value="" selected>Pilih Tanggal Lahir</option>
                         <?php for($i = 1; $i <= 30; $i++){?>
-                            <option value="<?= $i?>"><?= $i ?></option>
+                            <option <?php if($dataTanggal[2] == $i) echo 'selected'; ?> value="<?= $i?>"><?= $i ?></option>
                         <?php } ?>
                     </select>
                 </div>
@@ -536,7 +540,7 @@
                         <option value="" selected>Pilih Bulan Lahir</option>
                         <?php $listBulan = [1=>'Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember']?>
                         <?php foreach($listBulan as $bulan => $value){ ?>
-                            <option value="<?= $bulan ?>"><?= $value ?></option>
+                            <option <?php if($dataTanggal[1] == $bulan) echo 'selected'; ?> value="<?= $bulan ?>"><?= $value ?></option>
                         <?php } ?>
                     </select>
                 </div>
@@ -544,7 +548,7 @@
                     <select required name="tahun" class="form-select fw-bold" id="">
                         <option value="" selected>Pilih Tahun Lahir</option>
                         <?php for($i = 2024; $i >= 1800; $i--){?>
-                            <option value="<?= $i?>"><?= $i ?></option>
+                            <option <?php if($dataTanggal[0] == $i) echo 'selected'; ?> value="<?= $i?>"><?= $i ?></option>
                         <?php } ?>
                     </select>
                 </div>
@@ -589,7 +593,7 @@
                 <td><?= $dataKonser['namaKonser']?></td>
                 <td>
                     <a class="btn fw-bold m-1" href="index.php?p=editPengunjung&idPengunjung=<?= $data['idPengunjung']?>" style="background-color: #9EDF9C; color: black">Edit</a>
-                    <a class="btn fw-bold m-1" href="process.php?p=hapusPengunjung&idPengunjung=<?= $data['idPengunjung']?>"  style="background-color: #AF1740; color: white" onclick="confirm('Apakah Yakin Ingin Menghapus Data ?')">Delete</a>
+                    <a class="btn fw-bold m-1" href="process.php?p=hapusPengunjung&idPengunjung=<?= $data['idPengunjung']?>"  style="background-color: #AF1740; color: white" onclick="return confirm('Apakah Yakin Ingin Menghapus Data ?')">Delete</a>
                 </td>
             </tr>
             <?php $no++;
@@ -681,7 +685,7 @@
                 <td><?= $data['tanggalLahir'] ?></td>
                 <td>
                     <a class="btn fw-bold m-1" href="index.php?p=editPekerja&idPekerja=<?= $data['idPekerja'] ?>" style="background-color: #9EDF9C; color: black">Edit</a>
-                    <a class="btn fw-bold m-1" href="process.php?p=hapusPekerja&idPekerja=<?= $data['idPekerja'] ?>" style="background-color: #AF1740; color: white" onclick="confirm('Apakah Yakin Ingin Menghapus Data ?')">Delete</a>
+                    <a class="btn fw-bold m-1" href="process.php?p=hapusPekerja&idPekerja=<?= $data['idPekerja'] ?>" style="background-color: #AF1740; color: white" onclick="return confirm('Apakah Yakin Ingin Menghapus Data ?')">Delete</a>
                 </td>
             </tr>
             <?php $no++; } ?>
@@ -754,13 +758,13 @@
     <div class="col-lg-6">
         <form action="process.php?p=editPekerja&idPekerja=<?=$id?>" method="post">
             <input required class="form-control fw-bold my-3" type="text" name="namaPekerja" value="<?= $data['namaPekerja']?>" placeholder="Nama Pekerja">
-            <input required class="form-control fw-bold my-3" type="text" name="jabatanPekerja" placeholder="Jabatan Pekerja">
+            <input required class="form-control fw-bold my-3" type="text" name="jabatanPekerja" value="<?php echo $data['jabatanPekerja']?>" placeholder="Jabatan Pekerja">
             <div class="row my-3">
                 <div class="col-lg-4">
                     <select required name="tanggal" class="form-select fw-bold" id="">
                         <option value="" selected>Tanggal Lahir</option>
                         <?php for($i = 1; $i <= 30; $i++){?>
-                            <option value="<?= $i?>"><?= $i ?></option>
+                            <option <?php if($dataTanggal[1] == $i) echo 'selected'; ?> value="<?= $i?>"><?= $i ?></option>
                         <?php } ?>
                     </select>
                 </div>
@@ -769,7 +773,7 @@
                         <option value="" selected>Bulan Lahir</option>
                         <?php $listBulan = [1=>'Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember']?>
                         <?php foreach($listBulan as $bulan => $value){ ?>
-                            <option value="<?= $bulan ?>"><?= $value ?></option>
+                            <option <?php if($dataTanggal[2] == $bulan) echo 'selected'; ?> value="<?= $bulan ?>"><?= $value ?></option>
                         <?php } ?>
                     </select>
                 </div>
@@ -777,7 +781,7 @@
                     <select required name="tahun" class="form-select fw-bold" id="">
                         <option value="" selected>Tahun Lahir</option>
                         <?php for($i = 2024; $i >= 1800; $i--){?>
-                            <option value="<?= $i?>"><?= $i ?></option>
+                            <option <?php if($dataTanggal[0] == $i) echo 'selected'; ?> value="<?= $i?>"><?= $i ?></option>
                         <?php } ?>
                     </select>
                 </div>
@@ -823,7 +827,7 @@
                 <td><?= $data['biayaPerKonser'] ?></td>
                 <td>
                     <a class="btn fw-bold m-1" href="index.php?p=editSponsor&idSponsor=<?= $data['idSponsor'] ?>" style="background-color: #9EDF9C; color: black">Edit</a>
-                    <a class="btn fw-bold m-1" href="process.php?p=hapusSponsor&idSponsor=<?= $data['idSponsor'] ?>" style="background-color: #AF1740; color: white" onclick="confirm('Apakah Yakin Ingin Menghapus Data ?')">Delete</a>
+                    <a class="btn fw-bold m-1" href="process.php?p=hapusSponsor&idSponsor=<?= $data['idSponsor'] ?>" style="background-color: #AF1740; color: white" onclick="return confirm('Apakah Yakin Ingin Menghapus Data ?')">Delete</a>
                 </td>
             </tr>
             <?php $no++; } ?>
@@ -870,8 +874,8 @@
     <div class="col-lg-6">
         <form action="process.php?p=editSponsor&idSponsor=<?=$id?>" method="post">
             <input required class="form-control fw-bold my-3" type="text" name="namaSponsor" value="<?= $data['namaSponsor']?>" placeholder="Nama Sponsor">
-            <input required class="form-control fw-bold my-3" type="text" name="namaPemilik" placeholder="Nama Pemilik">
-            <input required class="form-control fw-bold my-3" type="number" name="biayaPerKonser" placeholder="Biaya PerKonser">
+            <input required class="form-control fw-bold my-3" type="text" name="namaPemilik" value="<?= $data['namaPemilik']?>" placeholder="Nama Pemilik">
+            <input required class="form-control fw-bold my-3" type="number" name="biayaPerKonser" value="<?= $data['biayaPerKonser']?>" placeholder="Biaya PerKonser">
             
             <button type="submit" name="submit" class="btn my-3 fw-bold" style="background-color: #9EDF9C" >Perbaharui Data Sponsor</button>
         </form>
